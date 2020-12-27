@@ -25,6 +25,10 @@ export default class Post extends _BaseEntity {
   @Column({ nullable: true })
   subtitle?: string
 
+  @Field({ nullable: true })
+  @Column({ type: 'text', nullable: true })
+  content?: string
+
   @Field()
   @Column({ nullable: true })
   cover?: string

@@ -26,9 +26,6 @@ export default class Video extends _BaseEntity {
   @Column({ nullable: true })
   cover?: string
 
-  @Field()
-  bindPostId: string
-
   @Field(() => Post)
   @ManyToOne(() => Post, (post) => post.videos)
   bindPost: Post

@@ -12,21 +12,10 @@ export default class PostResolver {
   @Mutation(() => [Post])
   async posts(
     @Arg('options')
-    {
-      id,
-      title,
-      cover,
-      categoriesId,
-      creatorId,
-      tagsId,
-      offset,
-      limit,
-      type,
-    }: QueryPostsArgs
+    { id, categoriesId, creatorId, tagsId, offset, limit, type }: QueryPostsArgs
   ): Promise<Post[]> {
     const where: FindConditions<Post> = {
       status: 0,
-      cover,
     }
 
     if (type != -1) where.type = type
@@ -35,10 +24,6 @@ export default class PostResolver {
     if (categoriesId) where.categories = await Category.findByIds(categoriesId)
     // if (title) where.title = title
     if (id) where.id = id
-
-    console.log('===============')
-    console.log(where)
-    console.log('==============')
 
     return Post.find({
       skip: offset,
@@ -58,6 +43,7 @@ export default class PostResolver {
         title: `%${title}%`,
       })
       .andWhere('p.status = :status', { status: 0 })
+      .leftJoinAndSelect('p.videos', 'video')
       .getMany()
   }
 

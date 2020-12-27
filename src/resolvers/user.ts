@@ -132,16 +132,17 @@ export default class UserResolver {
   me(@Ctx() { req }: ApolloContext): Promise<User | undefined> | null {
     if (!req.session.userId) return null
 
-    // getConnection()
-    // .createQueryBuilder()
-    // .select('user')
-    // .from(User, 'user')
-    // .leftJoinAndSelect('user.posts', 'post')
-    // .getOne()
+    // return getConnection()
+    //   .createQueryBuilder()
+    //   .select('user')
+    //   .from(User, 'user')
+    //   .where({ id: req.session.userId })
+    //   .leftJoinAndSelect('user.posts', 'post')
+    //   .getOne()
 
     return getRepository(User).findOne({
       where: { id: req.session.userId },
-      relations: ['posts'],
+      // relations: ['posts'],
     })
   }
 }

@@ -45,9 +45,6 @@ export class QueryPostsArgs {
   @Field({ nullable: true, defaultValue: '' })
   title?: string
 
-  @Field()
-  cover?: string
-
   @Field({ nullable: true, defaultValue: -1 })
   type?: number
 

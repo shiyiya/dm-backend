@@ -21,3 +21,9 @@ getConnection()
   .set({ username: 'admin' })
   .execute()
 ```
+
+```shell
+docker-compose down
+docker-compose build
+docker-compose up
+```

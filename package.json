@@ -15,7 +15,8 @@
     "dev": "nodemon dist/index.js",
     "start": "node dist/index.js",
     "start2": "ts-node src/index.ts",
-    "dev2": "nodemon --exec ts-node src/index.ts"
+    "dev2": "nodemon --exec ts-node src/index.ts",
+    "m": "ts-node src/migrat.ts"
   },
   "dependencies": {
     "apollo-server-express": "^2.19.0",
