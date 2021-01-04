@@ -29,7 +29,7 @@ export default class Post extends _BaseEntity {
   @Column({ type: 'text', nullable: true })
   content?: string
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ nullable: true })
   cover?: string
 

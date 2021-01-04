@@ -16,7 +16,7 @@ export default class PostResolver {
 
   @Query(() => [Post], { nullable: true })
   lasted() {
-    Post.find({ order: { updatedAt: 'DESC' } })
+    return Post.find({ order: { updatedAt: 'DESC' }, skip: 1, take: 20 })
   }
 
   @Query(() => [Post], { nullable: true })
@@ -31,11 +31,18 @@ export default class PostResolver {
       getRepository(Post)
         .createQueryBuilder('p')
         .where('p.title like :title', { title: `%${title}%` })
-        .orderBy('DESC')
         .andWhere('p.status = :status', { status: 0 })
+        // .addOrderBy('DESC')
+        .offset(1)
+        .limit(30)
         // .leftJoinAndSelect('p.videos', 'video')
         .getMany()
     )
+  }
+
+  @Query(() => Post, { nullable: true })
+  postsById(@Arg('id') id: string) {
+    return Post.findOne(id, { relations: ['videos'] })
   }
 
   @Mutation(() => [Post])
