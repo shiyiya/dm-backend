@@ -9,6 +9,35 @@ import Video from '../entities/Video'
 
 @Resolver()
 export default class PostResolver {
+  @Query(() => Post, { nullable: true })
+  post(@Arg('id', () => Int) id: number): Promise<Post | undefined> {
+    return Post.findOne(id)
+  }
+
+  @Query(() => [Post], { nullable: true })
+  lasted() {
+    Post.find({ order: { updatedAt: 'DESC' } })
+  }
+
+  @Query(() => [Post], { nullable: true })
+  recommend() {
+    //TODO get recommend Tag
+    // Post.find({ where:{tags:} })
+  }
+
+  @Query(() => [Post], { nullable: true })
+  postsByTitle(@Arg('title') title: String) {
+    return (
+      getRepository(Post)
+        .createQueryBuilder('p')
+        .where('p.title like :title', { title: `%${title}%` })
+        .orderBy('DESC')
+        .andWhere('p.status = :status', { status: 0 })
+        // .leftJoinAndSelect('p.videos', 'video')
+        .getMany()
+    )
+  }
+
   @Mutation(() => [Post])
   async posts(
     @Arg('options')
@@ -33,23 +62,6 @@ export default class PostResolver {
       relations: ['creator', 'tags', 'appraisals', 'categories', 'videos'],
       order: { createdAt: 'DESC' },
     })
-  }
-
-  @Query(() => [Post], { nullable: true })
-  postsByTitle(@Arg('title') title: String) {
-    return getRepository(Post)
-      .createQueryBuilder('p')
-      .where('p.title like :title', {
-        title: `%${title}%`,
-      })
-      .andWhere('p.status = :status', { status: 0 })
-      .leftJoinAndSelect('p.videos', 'video')
-      .getMany()
-  }
-
-  @Query(() => Post, { nullable: true })
-  post(@Arg('id', () => Int) id: number): Promise<Post | undefined> {
-    return Post.findOne(id)
   }
 
   @Mutation(() => Post)

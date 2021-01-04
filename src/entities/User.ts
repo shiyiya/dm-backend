@@ -1,4 +1,4 @@
-import { Field, ObjectType } from 'type-graphql'
+import { Field, Int, ObjectType } from 'type-graphql'
 import { Column, Entity, OneToMany } from 'typeorm'
 import Appraisal from './Appraisal'
 import Post from './Post'
@@ -7,7 +7,7 @@ import _BaseEntity from './_BaseEntity'
 @ObjectType()
 @Entity()
 export default class User extends _BaseEntity {
-  @Field()
+  @Field(() => Int)
   @Column({ default: 1, type: 'tinyint' }) //0 admin  1 gust 2 writer ...
   roleLevel: number
 

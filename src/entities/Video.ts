@@ -1,4 +1,4 @@
-import { Field, ObjectType } from 'type-graphql'
+import { Field, Int, ObjectType } from 'type-graphql'
 import { Column, Entity, ManyToOne } from 'typeorm'
 import Post from './Post'
 import _BaseEntity from './_BaseEntity'
@@ -14,7 +14,7 @@ export default class Video extends _BaseEntity {
   @Column()
   playUrl: string
 
-  @Field()
+  @Field(() => Int)
   @Column()
   episode: number
 

@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from 'type-graphql'
+import { Field, ID, Int, ObjectType } from 'type-graphql'
 import {
   BaseEntity,
   Column,
@@ -23,7 +23,7 @@ export default class _BaseEntity extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date
 
-  @Field()
+  @Field(() => Int)
   @Column({ type: 'tinyint', default: 0 }) // 0 正常
   status: number
 }

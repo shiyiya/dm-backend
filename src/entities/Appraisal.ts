@@ -1,4 +1,4 @@
-import { Field, ObjectType } from 'type-graphql'
+import { Field, Int, ObjectType } from 'type-graphql'
 import { Column, Entity, ManyToOne } from 'typeorm'
 import Post from './Post'
 import User from './User'
@@ -11,7 +11,7 @@ export default class Appraisal extends _BaseEntity {
   @Column()
   content: string
 
-  @Field()
+  @Field(() => Int)
   @Column()
   rate: number
 

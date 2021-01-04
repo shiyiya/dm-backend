@@ -114,7 +114,10 @@ const migratVideo = () =>
   })
 
 migratPost().then((_) => {
-  migratVideo().then((_) => {})
+  migratVideo().then((_) => {
+    console.log(mresult)
+    console.log(mresult.error)
+  })
 })
 
 /***

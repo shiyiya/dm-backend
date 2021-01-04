@@ -1,4 +1,4 @@
-import { Field, ObjectType } from 'type-graphql'
+import { Field, Int, ObjectType } from 'type-graphql'
 import {
   Column,
   Entity,
@@ -33,7 +33,7 @@ export default class Post extends _BaseEntity {
   @Column({ nullable: true })
   cover?: string
 
-  @Field()
+  @Field(() => Int)
   @Column({ default: 0 })
   type: number // video 0 or topic 1
 

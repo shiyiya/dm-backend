@@ -1,4 +1,4 @@
-import { Field, InputType } from 'type-graphql'
+import { Field, InputType, Int } from 'type-graphql'
 import { CreateVideoArgsWithPost } from './video.arg'
 
 @InputType()
@@ -12,7 +12,7 @@ class OptionalPostField {
   @Field({ nullable: true })
   cover?: string
 
-  @Field({ nullable: true, defaultValue: 0 })
+  @Field(() => Int, { nullable: true, defaultValue: 0 })
   type?: number
 
   @Field(() => [String], { nullable: true })
@@ -45,7 +45,7 @@ export class QueryPostsArgs {
   @Field({ nullable: true, defaultValue: '' })
   title?: string
 
-  @Field({ nullable: true, defaultValue: -1 })
+  @Field(() => Int, { nullable: true, defaultValue: -1 })
   type?: number
 
   @Field({ nullable: true })
@@ -57,9 +57,9 @@ export class QueryPostsArgs {
   @Field(() => [String], { nullable: true })
   tagsId?: string[]
 
-  @Field({ defaultValue: 0 })
+  @Field(() => Int, { defaultValue: 0 })
   offset?: number
 
-  @Field({ defaultValue: 15 })
+  @Field(() => Int, { defaultValue: 15 })
   limit?: number
 }
