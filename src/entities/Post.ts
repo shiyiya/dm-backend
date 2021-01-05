@@ -50,12 +50,12 @@ export default class Post extends _BaseEntity {
   appraisals?: Appraisal[]
 
   @Field(() => [Category], { nullable: true })
-  @ManyToMany(() => Category, { nullable: true })
-  @JoinTable({ name: 'posts_cas' })
+  @ManyToMany(() => Category, (c) => c.posts, { nullable: true })
+  @JoinTable()
   categories?: Category[]
 
   @Field(() => [Tag], { nullable: true })
-  @ManyToMany(() => Tag, { nullable: true })
-  @JoinTable({ name: 'posts_tags' })
+  @ManyToMany(() => Tag, (t) => t.posts, { nullable: true })
+  @JoinTable()
   tags?: Tag[]
 }

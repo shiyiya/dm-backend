@@ -32,7 +32,19 @@ export class CreatePostArgs extends OptionalPostField {
 }
 
 @InputType()
-export class UpdatePostArgs extends OptionalPostField {
+export class UpdatePostArgs {
+  @Field()
+  title: string
+
+  @Field({ nullable: true })
+  subtitle?: string
+
+  @Field({ nullable: true })
+  cover?: string
+
+  @Field(() => Int, { nullable: true, defaultValue: 0 })
+  type?: number
+
   @Field()
   id: string
 }

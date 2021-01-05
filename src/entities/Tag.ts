@@ -1,5 +1,6 @@
 import { Field, ObjectType } from 'type-graphql'
-import { Column, Entity } from 'typeorm'
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm'
+import Post from './Post'
 import _BaseEntity from './_BaseEntity'
 
 @ObjectType()
@@ -13,7 +14,7 @@ export default class Tag extends _BaseEntity {
   @Column({ nullable: true })
   description?: string
 
-  // @ManyToMany(() => Post, { nullable: true })
-  // @JoinTable()
-  // posts: Post[]
+  @Field(() => [Post], { nullable: true })
+  @ManyToMany(() => Post, (p) => p.tags, { nullable: true })
+  posts?: Post[]
 }

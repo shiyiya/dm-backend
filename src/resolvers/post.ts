@@ -9,11 +9,6 @@ import Video from '../entities/Video'
 
 @Resolver()
 export default class PostResolver {
-  @Query(() => Post, { nullable: true })
-  post(@Arg('id', () => Int) id: number): Promise<Post | undefined> {
-    return Post.findOne(id)
-  }
-
   @Query(() => [Post], { nullable: true })
   lasted() {
     return Post.find({ order: { updatedAt: 'DESC' }, skip: 1, take: 20 })
@@ -21,8 +16,12 @@ export default class PostResolver {
 
   @Query(() => [Post], { nullable: true })
   recommend() {
-    //TODO get recommend Tag
-    // Post.find({ where:{tags:} })
+    return Tag.find({ where: { id: '1' }, relations: ['posts'] })
+  }
+
+  @Query(() => Post, { nullable: true })
+  postsById(@Arg('id') id: string) {
+    return Post.findOne(id, { relations: ['videos'] })
   }
 
   @Query(() => [Post], { nullable: true })
@@ -32,7 +31,6 @@ export default class PostResolver {
         .createQueryBuilder('p')
         .where('p.title like :title', { title: `%${title}%` })
         .andWhere('p.status = :status', { status: 0 })
-        // .addOrderBy('DESC')
         .offset(1)
         .limit(30)
         // .leftJoinAndSelect('p.videos', 'video')
@@ -40,9 +38,14 @@ export default class PostResolver {
     )
   }
 
-  @Query(() => Post, { nullable: true })
-  postsById(@Arg('id') id: string) {
-    return Post.findOne(id, { relations: ['videos'] })
+  @Query(() => [Post], { nullable: true })
+  postsByCa(@Arg('caId') caId: String) {
+    return Category.find({ where: { id: caId }, relations: ['posts'] })
+  }
+
+  @Query(() => [Post], { nullable: true })
+  postsByTag(@Arg('tagId') tagId: String) {
+    return Tag.find({ where: { id: tagId }, relations: ['posts'] })
   }
 
   @Mutation(() => [Post])
@@ -80,10 +83,6 @@ export default class PostResolver {
     if (categoriesId) categories = await Category.findByIds(categoriesId)
     if (tagsId) tags = await Tag.findByIds(tagsId)
 
-    console.log('===============')
-    console.log(categories, tags, videos)
-    console.log('==============')
-
     const post = await Post.create({
       creator: await User.findOne(creatorId),
       tags,
@@ -108,16 +107,7 @@ export default class PostResolver {
   @Mutation(() => Boolean)
   async updatePost(
     @Arg('options')
-    {
-      id,
-      title,
-      subtitle,
-      categoriesId,
-      tagsId,
-      type,
-      cover,
-      ...options
-    }: UpdatePostArgs
+    { id, title, subtitle, type, cover }: UpdatePostArgs
   ): Promise<Boolean> {
     const post = await Post.findOne(id)
 
