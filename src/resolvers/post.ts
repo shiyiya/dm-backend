@@ -11,7 +11,7 @@ import Video from '../entities/Video'
 export default class PostResolver {
   @Query(() => [Post], { nullable: true })
   lasted() {
-    return Post.find({ order: { updatedAt: 'DESC' }, skip: 1, take: 20 })
+    return Post.find({ order: { updatedAt: 'DESC' }, skip: 0, take: 20 })
   }
 
   @Query(() => [Post], { nullable: true })
@@ -21,7 +21,9 @@ export default class PostResolver {
 
   @Query(() => Post, { nullable: true })
   postsById(@Arg('id') id: string) {
-    return Post.findOne(id, { relations: ['videos'] })
+    return Post.findOne(id, {
+      relations: ['creator', 'tags', 'appraisals', 'categories', 'videos'],
+    })
   }
 
   @Query(() => [Post], { nullable: true })
@@ -31,21 +33,21 @@ export default class PostResolver {
         .createQueryBuilder('p')
         .where('p.title like :title', { title: `%${title}%` })
         .andWhere('p.status = :status', { status: 0 })
-        .offset(1)
+        .offset(0)
         .limit(30)
         // .leftJoinAndSelect('p.videos', 'video')
         .getMany()
     )
   }
 
-  @Query(() => [Post], { nullable: true })
+  @Query(() => Category, { nullable: true })
   postsByCa(@Arg('caId') caId: String) {
-    return Category.find({ where: { id: caId }, relations: ['posts'] })
+    return Category.findOne({ where: { id: caId }, relations: ['posts'] })
   }
 
-  @Query(() => [Post], { nullable: true })
+  @Query(() => Tag, { nullable: true })
   postsByTag(@Arg('tagId') tagId: String) {
-    return Tag.find({ where: { id: tagId }, relations: ['posts'] })
+    return Tag.findOne({ where: { id: tagId }, relations: ['posts'] })
   }
 
   @Mutation(() => [Post])
