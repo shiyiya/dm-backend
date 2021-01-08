@@ -10,6 +10,7 @@ import cors from 'cors'
 import { createConnection } from 'typeorm'
 import { applyMiddleware } from 'graphql-middleware'
 import authMiddlewares from './middleware/authmiddleware'
+import wasm from './wasm'
 
 const main = async () => {
   await createConnection()
@@ -52,6 +53,9 @@ const main = async () => {
     debug: true,
     playground: true,
   }).applyMiddleware({ app, cors: false })
+
+  app.use(express.json())
+  app.post('/wasm', wasm)
 
   app.listen(4000, () => {
     console.log(`🚀 Server ready at http://localhost:4000/graphql`)
