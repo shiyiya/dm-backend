@@ -140,9 +140,6 @@ export default class UserResolver {
     //   .leftJoinAndSelect('user.posts', 'post')
     //   .getOne()
 
-    return getRepository(User).findOne({
-      where: { id: req.session.userId },
-      // relations: ['posts'],
-    })
+    return getRepository(User).findOne({ where: { id: req.session.userId } })
   }
 }

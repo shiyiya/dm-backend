@@ -1,11 +1,12 @@
 import Post from '../entities/Post'
-import { Arg, Int, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql'
 import { CreatePostArgs, QueryPostsArgs, UpdatePostArgs } from './dto/post.args'
 import Category from '../entities/Category'
 import Tag from '../entities/Tag'
 import User from '../entities/User'
 import { FindConditions, getRepository } from 'typeorm'
 import Video from '../entities/Video'
+import { ApolloContext } from 'src/types'
 
 @Resolver()
 export default class PostResolver {
@@ -69,7 +70,6 @@ export default class PostResolver {
     return Post.find({
       skip: offset,
       take: limit,
-      // where:`title like %${title}%`,
       where,
       relations: ['creator', 'tags', 'appraisals', 'categories', 'videos'],
       order: { createdAt: 'DESC' },
@@ -78,15 +78,16 @@ export default class PostResolver {
 
   @Mutation(() => Post)
   async createPost(
+    @Ctx() { req }: ApolloContext,
     @Arg('options')
-    { categoriesId, tagsId, creatorId, videos, ...options }: CreatePostArgs
+    { categoriesId, tagsId, videos, ...options }: CreatePostArgs
   ): Promise<Post> {
     let categories, tags
     if (categoriesId) categories = await Category.findByIds(categoriesId)
     if (tagsId) tags = await Tag.findByIds(tagsId)
 
     const post = await Post.create({
-      creator: await User.findOne(creatorId),
+      creator: await User.findOne(req.session.userId),
       tags,
       categories,
       ...options,

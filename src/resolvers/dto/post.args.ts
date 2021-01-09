@@ -24,9 +24,6 @@ class OptionalPostField {
 
 @InputType()
 export class CreatePostArgs extends OptionalPostField {
-  @Field()
-  creatorId: string
-
   @Field(() => [CreateVideoArgsWithPost], { nullable: true, defaultValue: [] })
   videos?: CreateVideoArgsWithPost[]
 }

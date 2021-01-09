@@ -46,8 +46,8 @@ const main = async () => {
         resolvers: [__dirname + '/resolvers/*.{ts,js}'],
         validate: false, //
         authMode: 'null',
-      })
-      // authMiddlewares
+      }),
+      authMiddlewares
     ),
     context: ({ req, res }): ApolloContext => ({ req, res }),
     debug: true,

@@ -1,5 +1,5 @@
 import { Field, ObjectType } from 'type-graphql'
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm'
+import { Column, Entity, ManyToMany } from 'typeorm'
 import Post from './Post'
 import _BaseEntity from './_BaseEntity'
 

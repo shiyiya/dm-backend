@@ -12,22 +12,14 @@ export default class Appraisal extends _BaseEntity {
   content: string
 
   @Field(() => Int)
-  @Column()
+  @Column({ type: 'tinyint' })
   rate: number
-
-  @Field()
-  @Column()
-  bindPostId: String
 
   @Field(() => Post)
   @ManyToOne(() => Post, (post) => post.appraisals, {
     // onDelete: 'CASCADE',
   })
   bindPost: Post
-
-  @Field()
-  @Column()
-  creatorId: String
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.appraisals)
