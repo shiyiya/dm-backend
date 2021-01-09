@@ -12,10 +12,10 @@
     "gen-env": "gen-env-types .env -o src/env.d.ts -e .",
     "build": "tsc",
     "watch": "tsc -w",
-    "dev": "nodemon dist/index.js",
-    "start": "node dist/index.js",
-    "start2": "ts-node src/index.ts",
-    "dev2": "nodemon --exec ts-node src/index.ts",
+    "dev": "set NODE_ENV=development && nodemon dist/index.js",
+    "dev2": "set NODE_ENV=development && nodemon --exec ts-node src/index.ts",
+    "start": "set NODE_ENV=production && node dist/index.js",
+    "start2": "set NODE_ENV=production &&  ts-node src/index.ts",
     "m": "ts-node src/migrat.ts"
   },
   "dependencies": {

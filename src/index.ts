@@ -12,6 +12,8 @@ import { applyMiddleware } from 'graphql-middleware'
 import authMiddlewares from './middleware/authmiddleware'
 import wasm from './wasm'
 
+const __ISDEV__ = process.env.NODE_ENV === 'development'
+
 const main = async () => {
   await createConnection()
 
@@ -30,8 +32,8 @@ const main = async () => {
       saveUninitialized: true,
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7 day
-        httpOnly: true,
-        secure: false, // production -> true
+        httpOnly: !__ISDEV__,
+        secure: !__ISDEV__,
         sameSite: 'lax',
       },
       name: 'dm',
@@ -50,8 +52,8 @@ const main = async () => {
       authMiddlewares
     ),
     context: ({ req, res }): ApolloContext => ({ req, res }),
-    debug: true,
-    playground: true,
+    debug: __ISDEV__,
+    playground: __ISDEV__,
   }).applyMiddleware({ app, cors: false })
 
   app.use(express.json())
