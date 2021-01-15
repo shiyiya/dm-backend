@@ -12,7 +12,7 @@ import { applyMiddleware } from 'graphql-middleware'
 import authMiddlewares from './middleware/authmiddleware'
 import wasm from './wasm'
 
-const __ISDEV__ = process.env.NODE_ENV === 'development'
+const __ISDEV__ = process.env.NODE_ENV?.trim() === 'development'
 
 const main = async () => {
   await createConnection()
@@ -42,15 +42,16 @@ const main = async () => {
     })
   )
 
+  const schema = await buildSchema({
+    resolvers: [__dirname + '/resolvers/*.{ts,js}'],
+    validate: false, //
+    authMode: 'null',
+  })
+
   new ApolloServer({
-    schema: applyMiddleware(
-      await buildSchema({
-        resolvers: [__dirname + '/resolvers/*.{ts,js}'],
-        validate: false, //
-        authMode: 'null',
-      }),
-      authMiddlewares
-    ),
+    schema: __ISDEV__
+      ? applyMiddleware(schema)
+      : applyMiddleware(schema, authMiddlewares),
     context: ({ req, res }): ApolloContext => ({ req, res }),
     debug: __ISDEV__,
     playground: __ISDEV__,

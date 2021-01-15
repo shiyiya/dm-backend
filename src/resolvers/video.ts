@@ -1,11 +1,16 @@
 import Video from '../entities/Video'
-import { Arg, Ctx, Mutation, Resolver } from 'type-graphql'
+import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { CreateVideoArgs, EditVideoArgs } from './dto/video.arg'
 import { getConnection } from 'typeorm'
 import Post from '../entities/Post'
 
 @Resolver()
 export default class VideoResolver {
+  @Query(() => [Video])
+  queryVideos() {
+    return Video.find()
+  }
+
   @Mutation(() => Video)
   createVideo(@Arg('options') options: CreateVideoArgs) {
     return Video.create(options).save()

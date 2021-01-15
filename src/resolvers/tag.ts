@@ -1,12 +1,17 @@
-import { Arg, Ctx, Mutation, Resolver } from 'type-graphql'
-import { getConnection } from 'typeorm'
+import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import { getConnection, UpdateResult } from 'typeorm'
 import Tag from '../entities/Tag'
 import { CreateTagArgs, DelTagArgs, EditTagArgs } from './dto/tag.arg'
 import Post from '../entities/Post'
 
 @Resolver()
 export default class TagResolver {
-  @Mutation(() => Tag)
+  @Query(() => [Tag])
+  queryCategories() {
+    return Tag.find()
+  }
+
+  @Query(() => Tag)
   createTag(@Arg('options') options: CreateTagArgs) {
     return Tag.create(options).save()
   }

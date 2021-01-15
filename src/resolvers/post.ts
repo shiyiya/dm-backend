@@ -11,24 +11,24 @@ import { ApolloContext } from 'src/types'
 @Resolver()
 export default class PostResolver {
   @Query(() => [Post], { nullable: true })
-  lasted() {
+  queryLastedPost() {
     return Post.find({ order: { updatedAt: 'DESC' }, skip: 0, take: 20 })
   }
 
   @Query(() => [Post], { nullable: true })
-  recommend() {
+  queryRecommendPost() {
     return Tag.find({ where: { id: '1' }, relations: ['posts'] })
   }
 
   @Query(() => Post, { nullable: true })
-  postsById(@Arg('id') id: string) {
+  queryPostById(@Arg('id') id: string) {
     return Post.findOne(id, {
       relations: ['creator', 'tags', 'appraisals', 'categories', 'videos'],
     })
   }
 
   @Query(() => [Post], { nullable: true })
-  postsByTitle(@Arg('title') title: String) {
+  queryPostsByTitle(@Arg('title') title: String) {
     return (
       getRepository(Post)
         .createQueryBuilder('p')
@@ -42,17 +42,17 @@ export default class PostResolver {
   }
 
   @Query(() => Category, { nullable: true })
-  postsByCa(@Arg('caId') caId: String) {
+  queryPostsByCa(@Arg('caId') caId: String) {
     return Category.findOne({ where: { id: caId }, relations: ['posts'] })
   }
 
   @Query(() => Tag, { nullable: true })
-  postsByTag(@Arg('tagId') tagId: String) {
+  queryPostsByTag(@Arg('tagId') tagId: String) {
     return Tag.findOne({ where: { id: tagId }, relations: ['posts'] })
   }
 
   @Mutation(() => [Post])
-  async posts(
+  async queryPosts(
     @Arg('options')
     { id, categoriesId, creatorId, tagsId, offset, limit, type }: QueryPostsArgs
   ): Promise<Post[]> {

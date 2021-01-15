@@ -30,6 +30,7 @@ const authMiddlewares = shield({
     login: authMap.ignore,
     logout: authMap.ignore,
     register: authMap.ignore,
+    queryPosts: authMap.ignore,
     createPost: or(authMap.isWriter, authMap.isAdmin),
     updatePost: or(authMap.isWriter, authMap.isAdmin),
     '*': authMap.hasLogin,

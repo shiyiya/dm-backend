@@ -61,12 +61,12 @@ class RegisterResonse {
 @Resolver()
 export default class UserResolver {
   @Query(() => [User])
-  users(): Promise<User[]> {
+  queryUsers(): Promise<User[]> {
     return User.find()
   }
 
   @Query(() => User, { nullable: true })
-  user(
+  queryUser(
     @Arg('email', () => String, { nullable: true }) email: string,
     @Arg('username', () => String, { nullable: true }) username: string
   ): Promise<User | undefined> {

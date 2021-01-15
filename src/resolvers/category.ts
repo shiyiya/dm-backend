@@ -1,4 +1,4 @@
-import { Arg, Ctx, Mutation, Resolver } from 'type-graphql'
+import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql'
 import { getConnection } from 'typeorm'
 import Category from '../entities/Category'
 import {
@@ -10,6 +10,11 @@ import Post from '../entities/Post'
 
 @Resolver()
 export default class CategoryResolver {
+  @Query(() => [Category])
+  queryCategories() {
+    return Category.find()
+  }
+
   @Mutation(() => Category)
   createCategory(@Arg('options') options: CreateCategoryArgs) {
     return Category.create(options).save()
