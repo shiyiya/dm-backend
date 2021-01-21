@@ -1,4 +1,4 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql'
 import { getConnection } from 'typeorm'
 import Category from '../entities/Category'
 import {
@@ -11,8 +11,21 @@ import Post from '../entities/Post'
 @Resolver()
 export default class CategoryResolver {
   @Query(() => [Category])
-  queryCategories() {
-    return Category.find()
+  queryCategorys(
+    @Arg('offset', () => Int, { nullable: true }) offset: number,
+    @Arg('limit', () => Int, { nullable: true }) limit: number
+  ) {
+    if (typeof offset !== 'undefined') {
+      return Category.find({
+        skip: offset * limit,
+        take: limit,
+        order: {
+          createdAt: 'DESC',
+        },
+      })
+    } else {
+      return Category.find({ skip: 0, take: 15, order: { createdAt: 'DESC' } })
+    }
   }
 
   @Mutation(() => Category)

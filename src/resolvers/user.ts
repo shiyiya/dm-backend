@@ -4,6 +4,7 @@ import {
   Ctx,
   Field,
   InputType,
+  Int,
   Mutation,
   ObjectType,
   Query,
@@ -61,8 +62,21 @@ class RegisterResonse {
 @Resolver()
 export default class UserResolver {
   @Query(() => [User])
-  queryUsers(): Promise<User[]> {
-    return User.find()
+  queryUsers(
+    @Arg('offset', () => Int, { nullable: true }) offset: number,
+    @Arg('limit', () => Int, { nullable: true }) limit: number
+  ): Promise<User[]> {
+    if (typeof offset !== 'undefined') {
+      return User.find({
+        skip: offset * limit,
+        take: limit,
+        order: {
+          createdAt: 'DESC',
+        },
+      })
+    } else {
+      return User.find({ skip: 0, take: 15, order: { createdAt: 'DESC' } })
+    }
   }
 
   @Query(() => User, { nullable: true })
@@ -75,6 +89,13 @@ export default class UserResolver {
     } else {
       return User.findOne({ username })
     }
+  }
+
+  @Query(() => [User], { nullable: true })
+  queryUsersByIds(
+    @Arg('ids', () => [String], { nullable: true }) ids: string[]
+  ): Promise<User[] | undefined> {
+    return User.findByIds(ids)
   }
 
   @Mutation(() => RegisterResonse)

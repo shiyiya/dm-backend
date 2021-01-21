@@ -1,5 +1,5 @@
 import Video from '../entities/Video'
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql'
 import { CreateVideoArgs, EditVideoArgs } from './dto/video.arg'
 import { getConnection } from 'typeorm'
 import Post from '../entities/Post'
@@ -7,8 +7,27 @@ import Post from '../entities/Post'
 @Resolver()
 export default class VideoResolver {
   @Query(() => [Video])
-  queryVideos() {
-    return Video.find()
+  queryVideos(
+    @Arg('offset', () => Int, { nullable: true }) offset: number,
+    @Arg('limit', () => Int, { nullable: true }) limit: number
+  ): Promise<Video[]> {
+    if (typeof offset !== 'undefined') {
+      return Video.find({
+        skip: offset * limit,
+        take: limit,
+        order: {
+          createdAt: 'DESC',
+        },
+        relations: ['bindPost'],
+      })
+    } else {
+      return Video.find({
+        skip: 0,
+        take: 15,
+        order: { createdAt: 'DESC' },
+        relations: ['bindPost'],
+      })
+    }
   }
 
   @Mutation(() => Video)

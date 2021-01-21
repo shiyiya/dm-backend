@@ -20,6 +20,9 @@ class OptionalPostField {
 
   @Field(() => [String], { nullable: true })
   tagsId?: string[]
+
+  @Field(() => String, { nullable: true })
+  content?: string
 }
 
 @InputType()
@@ -35,6 +38,9 @@ export class UpdatePostArgs {
 
   @Field({ nullable: true })
   subtitle?: string
+
+  @Field({ nullable: true })
+  content?: string
 
   @Field({ nullable: true })
   cover?: string

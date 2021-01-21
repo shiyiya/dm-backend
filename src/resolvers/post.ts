@@ -1,5 +1,5 @@
 import Post from '../entities/Post'
-import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Ctx, ID, Int, Mutation, Query, Resolver } from 'type-graphql'
 import { CreatePostArgs, QueryPostsArgs, UpdatePostArgs } from './dto/post.args'
 import Category from '../entities/Category'
 import Tag from '../entities/Tag'
@@ -11,7 +11,7 @@ import { ApolloContext } from 'src/types'
 @Resolver()
 export default class PostResolver {
   @Query(() => [Post], { nullable: true })
-  queryLastedPost() {
+  queryLastedPosts() {
     return Post.find({ order: { updatedAt: 'DESC' }, skip: 0, take: 20 })
   }
 
@@ -68,7 +68,8 @@ export default class PostResolver {
     if (id) where.id = id
 
     return Post.find({
-      skip: offset,
+      // @ts-ignore
+      skip: offset * limit,
       take: limit,
       where,
       relations: ['creator', 'tags', 'appraisals', 'categories', 'videos'],
@@ -107,23 +108,27 @@ export default class PostResolver {
     return post
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Post)
   async updatePost(
     @Arg('options')
     { id, title, subtitle, type, cover }: UpdatePostArgs
-  ): Promise<Boolean> {
+  ): Promise<Post> {
     const post = await Post.findOne(id)
 
-    if (!post) return false
+    if (!post) return null as any
 
     Post.update(id, { title, type, subtitle, cover })
 
-    return true
+    return post
   }
 
   @Mutation(() => Boolean)
-  async delectPost(@Arg('id', () => Int) id: number): Promise<boolean> {
-    await Post.delete(id)
-    return true
+  async delPostById(@Arg('id', () => ID) id: number): Promise<boolean> {
+    try {
+      await Post.delete(id)
+      return true
+    } catch {
+      return false
+    }
   }
 }

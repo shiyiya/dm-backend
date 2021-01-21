@@ -1,4 +1,4 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql'
 import { getConnection, UpdateResult } from 'typeorm'
 import Tag from '../entities/Tag'
 import { CreateTagArgs, DelTagArgs, EditTagArgs } from './dto/tag.arg'
@@ -7,8 +7,21 @@ import Post from '../entities/Post'
 @Resolver()
 export default class TagResolver {
   @Query(() => [Tag])
-  queryCategories() {
-    return Tag.find()
+  queryTags(
+    @Arg('offset', () => Int, { nullable: true }) offset: number,
+    @Arg('limit', () => Int, { nullable: true }) limit: number
+  ) {
+    if (typeof offset !== 'undefined') {
+      return Tag.find({
+        skip: offset * limit,
+        take: limit,
+        order: {
+          createdAt: 'DESC',
+        },
+      })
+    } else {
+      return Tag.find({ skip: 0, take: 15, order: { createdAt: 'DESC' } })
+    }
   }
 
   @Query(() => Tag)
