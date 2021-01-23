@@ -8,6 +8,7 @@ export type ApolloContext = {
 declare module 'express-session' {
   interface SessionData {
     userId?: string
+    token?: string
   }
 }
 

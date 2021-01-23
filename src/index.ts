@@ -11,8 +11,11 @@ import { createConnection } from 'typeorm'
 import { applyMiddleware } from 'graphql-middleware'
 import authMiddlewares from './middleware/authmiddleware'
 import wasm from './wasm'
+import dotenv from 'dotenv'
 
 const __ISDEV__ = process.env.NODE_ENV?.trim() === 'development'
+
+dotenv.config({ path: './env', debug: __ISDEV__ })
 
 const main = async () => {
   await createConnection()
@@ -37,14 +40,14 @@ const main = async () => {
         sameSite: 'lax',
       },
       name: 'dm',
-      secret: 'dmsecret',
+      secret: process.env.COOKIE_SECRET || 'snydxhh',
       resave: false,
     })
   )
 
   const schema = await buildSchema({
     resolvers: [__dirname + '/resolvers/*.{ts,js}'],
-    validate: false, //
+    validate: false,
     authMode: 'null',
   })
 
@@ -54,7 +57,7 @@ const main = async () => {
       : applyMiddleware(schema, authMiddlewares),
     context: ({ req, res }): ApolloContext => ({ req, res }),
     debug: __ISDEV__,
-    playground: __ISDEV__,
+    playground: __ISDEV__ || { settings: { 'request.credentials': 'include' } },
   }).applyMiddleware({ app, cors: false })
 
   app.use(express.json())
@@ -67,4 +70,5 @@ const main = async () => {
 
 main().catch((error) => {
   console.error(error)
+  // process.exit(1);
 })

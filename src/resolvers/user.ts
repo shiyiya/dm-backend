@@ -3,34 +3,15 @@ import {
   Arg,
   Ctx,
   Field,
-  InputType,
   Int,
   Mutation,
   ObjectType,
   Query,
   Resolver,
 } from 'type-graphql'
-import argon2 from 'argon2'
 import { ApolloContext } from '../types'
-import { getRepository } from 'typeorm'
-
-@InputType()
-class UserRegisterInput {
-  @Field({ nullable: true })
-  username?: string
-
-  @Field()
-  email: string
-
-  @Field()
-  password: string
-
-  @Field({ nullable: true })
-  bio?: string
-
-  @Field({ nullable: true })
-  avatar?: string
-}
+import crypto, { randomInt } from 'crypto'
+import { sign } from '../utils/jwt'
 
 @ObjectType()
 class UserResponse {
@@ -100,14 +81,15 @@ export default class UserResolver {
 
   @Mutation(() => RegisterResonse)
   async register(
-    @Arg('params', () => UserRegisterInput) params: UserRegisterInput
+    @Arg('email') email: string,
+    @Arg('password') password: string
   ): Promise<RegisterResonse> {
-    // TODO: 邀請碼注冊
+    const hash = crypto.createHmac('sha512', process.env.PWD_SOAT || '')
+    hash.update(password + process.env.PWD_SOAT)
+
     const user = User.create({
-      username: params.username,
-      email: params.email,
-      password: await argon2.hash(params.password),
-      bio: params.bio,
+      email: email,
+      password: hash.digest('hex'),
     })
 
     try {
@@ -119,8 +101,6 @@ export default class UserResolver {
         }
       }
     }
-
-    //TODO: more checker
 
     return { user }
   }
@@ -134,10 +114,20 @@ export default class UserResolver {
     const user = await User.findOne({ email })
     if (!user) return { error: 'login error' }
 
-    const valid = await argon2.verify(user.password, password)
-    if (!valid) return { error: 'login error' }
+    const hash = crypto
+      .createHmac('sha512', process.env.PWD_SOAT || '')
+      .update(password + process.env.PWD_SOAT)
 
+    if (user.password !== hash.digest('hex')) {
+      return { error: 'login error' }
+    }
+
+    const token = sign(user.id + ':' + crypto.randomBytes(16).toString('hex'))
+    req.session.token = token
     req.session.userId = user.id
+
+    await User.update(user.id, { token: token })
+
     return { user }
   }
 
@@ -152,15 +142,6 @@ export default class UserResolver {
   @Query(() => User, { nullable: true })
   me(@Ctx() { req }: ApolloContext): Promise<User | undefined> | null {
     if (!req.session.userId) return null
-
-    // return getConnection()
-    //   .createQueryBuilder()
-    //   .select('user')
-    //   .from(User, 'user')
-    //   .where({ id: req.session.userId })
-    //   .leftJoinAndSelect('user.posts', 'post')
-    //   .getOne()
-
-    return getRepository(User).findOne({ where: { id: req.session.userId } })
+    return User.findOne({ where: { id: req.session.userId } })
   }
 }

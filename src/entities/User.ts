@@ -29,6 +29,10 @@ export default class User extends _BaseEntity {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
+  token?: string
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   avatar?: string
 
   @Field({ nullable: true })
