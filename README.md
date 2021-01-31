@@ -3,6 +3,10 @@
 - https://typegraphql.com/docs/
 - https://mikro-orm.io/docs/
 
+```
+docker-compose up
+```
+
 ```ts
 getConnection()
   .createQueryBuilder()
