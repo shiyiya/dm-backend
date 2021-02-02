@@ -3,8 +3,16 @@
 - https://typegraphql.com/docs/
 - https://mikro-orm.io/docs/
 
+## RUN
+
 ```
-docker-compose up
+docker-compose up -d
+
+docker-compose logs -f
+docker logs  dm_backend -f
+
+
+docker exec -i -t  dm_backend /bin/bash
 ```
 
 ```ts

@@ -1,11 +1,14 @@
-FROM node:14
+FROM node:alpine
 
 RUN mkdir /app
+
 WORKDIR /app
 
-COPY . /app/
-RUN yarn install
+COPY package.json /app/
 
-EXPOSE 3000
+RUN set -x ; cd /app \
+  && yarn install
 
-CMD [ "yarn", "dev2" ]
+EXPOSE 3000 3306
+
+# CMD [ "yarn", "dev2" ]

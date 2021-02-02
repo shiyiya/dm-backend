@@ -24,7 +24,7 @@ const main = async () => {
   app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
   const RedisStore = connectRedis(session)
-  const RedisClient = redis.createClient()
+  const RedisClient = redis.createClient({ host: 'redis' })
   app.use(
     session({
       store: new RedisStore({

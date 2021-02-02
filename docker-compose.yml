@@ -1,17 +1,40 @@
 version: '3'
+
+volumes:
+  mysql-db:
+    driver: local
+  node_modules:
+
 services:
+  db:
+    image: mysql:5.7
+    container_name: dm_db
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    ports:
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+    volumes:
+      - mysql-db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports: ['6379']
+
   backend:
     container_name: dm_backend
-    build:
-      context: ./
+    restart: always
+    build: .
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_INNER_PORT}
     volumes:
       - .:/app
       - /usr/src/app/node_modules
-    ports:
-      - ${BACKEND_PORT}:${BACKEND_INNER_PORT}
-    command: sh -c "yarn install && yarn dev2"
+    # command: sh -c "yarn install && yarn dev2"
     environment:
-      MYSQL_HOST: dm_database
+      MYSQL_HOST: dm_db
       MYSQL_USERNAME: ${MYSQL_USERNAME}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE_NAME: ${MYSQL_DATABASE}
@@ -19,30 +42,14 @@ services:
       BACKEND_INNER_PORT: ${BACKEND_INNER_PORT}
       # JWT_SECRET: ${JWT_SECRET}
 
-  database:
-    container_name: dm_database
-    image: mysql:5.7
-    volumes:
-      - mysql-db:/var/lib/mysql
-    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
-    ports:
-      - ${MYSQL_PORT}:3306
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-
-  phpmyadmin:
-    container_name: dm_pma
-    image: phpmyadmin/phpmyadmin
-    ports:
-      - ${PMA_PORT}:80
-    environment:
-      PMA_HOST: dm_database
-      PMA_USER: ${MYSQL_USERNAME}
-      PMA_PASSWORD: ${MYSQL_PASSWORD}
-    depends_on:
-      - database
-
-volumes:
-  mysql-db:
-    driver: local
+  # phpmyadmin:
+  #   container_name: dm_pma
+  #   image: phpmyadmin/phpmyadmin
+  #   ports:
+  #     - ${PMA_PORT}:80
+  #   environment:
+  #     PMA_HOST: dm_database
+  #     PMA_USER: ${MYSQL_USERNAME}
+  #     PMA_PASSWORD: ${MYSQL_PASSWORD}
+  #   depends_on:
+  #     - database
