@@ -64,7 +64,9 @@ const main = async () => {
   app.post('/wasm', wasm)
 
   app.listen(process.env.BACKEND_PORT || 3000, () => {
-    console.log(`🚀 Server ready at http://localhost:3000/graphql`)
+    console.log(
+      `[${process.env.NODE_ENV}] 🚀 Server ready at http://localhost:3000/graphql`
+    )
   })
 }
 

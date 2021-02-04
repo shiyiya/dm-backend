@@ -1,14 +1,14 @@
 FROM node:alpine
 
-RUN mkdir /app
-
 WORKDIR /app
 
-COPY package.json /app/
+COPY ./package*.json ./
 
 RUN set -x ; cd /app \
-  && yarn install
+  && npm i
+
+COPY . .
 
 EXPOSE 3000 3306
 
-# CMD [ "yarn", "dev2" ]
+CMD [ "npm", "run","dev" ]

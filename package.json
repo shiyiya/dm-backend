@@ -12,11 +12,11 @@
     "gen-env": "gen-env-types .env -o src/env.d.ts -e .",
     "build": "tsc",
     "watch": "tsc -w",
-    "dev": "set NODE_ENV=development && nodemon dist/index.js",
-    "dev2": "set NODE_ENV=development && nodemon --exec ts-node src/index.ts",
-    "start": "set NODE_ENV=production && node dist/index.js",
-    "start2": "set NODE_ENV=production &&  ts-node src/index.ts",
-    "m": "ts-node src/migrat.ts"
+    "dev": "set NODE_ENV=development && nodemon src/index.ts",
+    "start": "set NODE_ENV=production &&  ts-node src/index.ts",
+    "dev:js": "set NODE_ENV=development && nodemon dist/index.js",
+    "start:js": "set NODE_ENV=production && node dist/index.js",
+    "migrat": "ts-node --inspect src/migrat.ts"
   },
   "dependencies": {
     "apollo-server-express": "^2.19.0",
