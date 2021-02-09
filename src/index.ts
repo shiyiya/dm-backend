@@ -62,10 +62,11 @@ const main = async () => {
 
   app.use(express.json())
   app.post('/wasm', wasm)
+  app.post('/', (_, res) => res.send('ok'))
 
-  app.listen(process.env.BACKEND_PORT || 3000, () => {
+  app.listen(process.env.BACKEND_PORT || 4000, () => {
     console.log(
-      `[${process.env.NODE_ENV}] 🚀 Server ready at http://localhost:3000/graphql`
+      `[${process.env.NODE_ENV}] 🚀 Server ready at http://localhost:${process.env.BACKEND_PORT}/graphql`
     )
   })
 }

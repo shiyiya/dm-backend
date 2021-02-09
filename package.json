@@ -16,9 +16,9 @@
     "start": "set NODE_ENV=production &&  ts-node src/index.ts",
     "dev:js": "set NODE_ENV=development && nodemon dist/index.js",
     "start:js": "set NODE_ENV=production && node dist/index.js",
-    "deploy": "pm2 start dist/index.js",
-    "migrat": "ts-node --inspect src/migrat.ts",
-    "tsc": "tsc -v"
+    "deploy": "set NODE_ENV=production && node dist/src/index.js",
+    "pm": "pm2 start dist/src/index.js --no-daemon",
+    "migrat": "ts-node --inspect src/migrat.ts"
   },
   "dependencies": {
     "apollo-server-express": "^2.19.0",

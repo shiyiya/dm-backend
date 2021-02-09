@@ -9,13 +9,14 @@ services:
   backend:
     container_name: dm_backend
     build: .
+    restart: always
     ports:
       - ${BACKEND_PORT}:${BACKEND_INNER_PORT}
       - '9229:9229'
     volumes:
       - .:/app/src
       - /usr/src/app/node_modules
-    command: sh -c "npm run tsc && npm run build && npm run deploy"
+    command: sh -c "rm -rf dist && npm run build && npm run deploy"
     environment:
       NODE_ENV: production
       MYSQL_HOST: dm_db

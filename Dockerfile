@@ -7,6 +7,7 @@ COPY ./package*.json ./
 RUN set -x ; cd /app \
   && npm install -g npm \
   && npm i
+# && npm global install pm2
 
 COPY . .
 
