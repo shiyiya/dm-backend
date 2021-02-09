@@ -6,6 +6,26 @@ volumes:
   node_modules:
 
 services:
+  backend:
+    container_name: dm_backend
+    build: .
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_INNER_PORT}
+      - '9229:9229'
+    volumes:
+      - .:/app/src
+      - /usr/src/app/node_modules
+    command: sh -c "npm run tsc && npm run build && npm run deploy"
+    environment:
+      NODE_ENV: production
+      MYSQL_HOST: dm_db
+      MYSQL_USERNAME: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE_NAME: ${MYSQL_DATABASE}
+      MYSQL_PORT: ${MYSQL_PORT}
+      BACKEND_INNER_PORT: ${BACKEND_INNER_PORT}
+      # JWT_SECRET: ${JWT_SECRET}
+
   db:
     image: mysql:5.7
     container_name: dm_db
@@ -22,26 +42,6 @@ services:
     image: redis:alpine
     container_name: redis
     ports: ['6379']
-
-  backend:
-    container_name: dm_backend
-    build: .
-    ports:
-      - ${BACKEND_PORT}:${BACKEND_INNER_PORT}
-      - '9229:9229'
-    volumes:
-      - .:/app/src
-      - /usr/src/app/node_modules
-    command: sh -c "npm run dev"
-    environment:
-      NODE_ENV: development
-      MYSQL_HOST: dm_db
-      MYSQL_USERNAME: ${MYSQL_USERNAME}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE_NAME: ${MYSQL_DATABASE}
-      MYSQL_PORT: ${MYSQL_PORT}
-      BACKEND_INNER_PORT: ${BACKEND_INNER_PORT}
-      # JWT_SECRET: ${JWT_SECRET}
 
   # phpmyadmin:
   #   container_name: dm_pma

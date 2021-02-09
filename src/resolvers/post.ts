@@ -6,7 +6,7 @@ import Tag from '../entities/Tag'
 import User from '../entities/User'
 import { FindConditions, getRepository } from 'typeorm'
 import Video from '../entities/Video'
-import { ApolloContext } from 'src/types'
+import type { ApolloContext } from 'src/types'
 
 @Resolver()
 export default class PostResolver {

@@ -11,8 +11,10 @@ docker-compose up -d
 docker-compose logs -f
 docker logs  dm_backend -f
 
-
 docker exec -i -t  dm_backend /bin/bash
+
+docker system prune -a
+docker system prune --volumes
 ```
 
 ```ts
