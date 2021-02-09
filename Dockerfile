@@ -11,6 +11,6 @@ RUN set -x ; cd /app \
 
 COPY . .
 
-EXPOSE 3000 3306
+EXPOSE 4000
 
 # CMD [ "npm", "run","dev" ]

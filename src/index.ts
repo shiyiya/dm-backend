@@ -62,7 +62,7 @@ const main = async () => {
 
   app.use(express.json())
   app.post('/wasm', wasm)
-  app.post('/', (_, res) => res.send('ok'))
+  app.get('/', (_, res) => res.send('ok'))
 
   app.listen(process.env.BACKEND_PORT || 4000, () => {
     console.log(
