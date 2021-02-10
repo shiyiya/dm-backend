@@ -48,7 +48,7 @@ services:
     container_name: dm_pma
     image: phpmyadmin/phpmyadmin
     ports:
-      - ${PMA_PORT}:80
+      - ${PMA_PORT}:${PMA_PORT}
     environment:
       PMA_HOST: dm_database
       PMA_USER: ${MYSQL_USERNAME}
