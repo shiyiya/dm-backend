@@ -6,8 +6,12 @@ import Tag from '../entities/Tag'
 import User from '../entities/User'
 import { FindConditions, getRepository } from 'typeorm'
 import Video from '../entities/Video'
-import type { ApolloContext } from 'src/types'
+import type { Request, Response } from 'express'
 
+export type ApolloContext = {
+  req: Request
+  res: Response
+}
 @Resolver()
 export default class PostResolver {
   @Query(() => [Post], { nullable: true })

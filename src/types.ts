@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import type { Request, Response } from 'express'
 
 export type ApolloContext = {
   req: Request
@@ -17,3 +17,5 @@ export enum RoleLevel {
   GUEST = 1,
   WRITER = 2,
 }
+
+//TODO: src/src/resolvers/post.ts(9,36): error TS2307: Cannot find module 'src/types' or its corresponding type declarations.

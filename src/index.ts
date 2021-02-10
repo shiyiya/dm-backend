@@ -24,7 +24,9 @@ const main = async () => {
   app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
   const RedisStore = connectRedis(session)
-  const RedisClient = redis.createClient({ host: 'redis' })
+  const RedisClient = redis.createClient({
+    host: __ISDEV__ ? 'localhost' : 'redis', //docker
+  })
   app.use(
     session({
       store: new RedisStore({
@@ -52,12 +54,13 @@ const main = async () => {
   })
 
   new ApolloServer({
+    introspection: true,
     schema: __ISDEV__
       ? applyMiddleware(schema)
       : applyMiddleware(schema, authMiddlewares),
     context: ({ req, res }): ApolloContext => ({ req, res }),
     debug: __ISDEV__,
-    playground: __ISDEV__ || { settings: { 'request.credentials': 'include' } },
+    playground: true,
   }).applyMiddleware({ app, cors: false })
 
   app.use(express.json())
