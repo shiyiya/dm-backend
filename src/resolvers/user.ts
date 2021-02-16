@@ -12,6 +12,7 @@ import {
 import { ApolloContext } from '../types'
 import crypto, { randomInt } from 'crypto'
 import { sign } from '../utils/jwt'
+import { UpdateUserArgs } from './dto/user.arg'
 
 @ObjectType()
 class UserResponse {
@@ -63,13 +64,23 @@ export default class UserResolver {
   @Query(() => User, { nullable: true })
   queryUser(
     @Arg('email', () => String, { nullable: true }) email: string,
-    @Arg('username', () => String, { nullable: true }) username: string
+    @Arg('username', () => String, { nullable: true }) username: string,
+    @Arg('id', () => String, { nullable: true }) id: string
   ): Promise<User | undefined> {
     if (email) {
       return User.findOne({ email })
-    } else {
+    } else if (username) {
       return User.findOne({ username })
+    } else {
+      return User.findOne({ id })
     }
+  }
+
+  @Query(() => User, { nullable: true })
+  queryUserById(
+    @Arg('id', () => String) id: string
+  ): Promise<User | undefined> {
+    return User.findOne({ id })
   }
 
   @Query(() => [User], { nullable: true })
@@ -143,5 +154,14 @@ export default class UserResolver {
   me(@Ctx() { req }: ApolloContext): Promise<User | undefined> | null {
     if (!req.session.userId) return null
     return User.findOne({ where: { id: req.session.userId } })
+  }
+
+  @Query(() => User)
+  updateUser(
+    @Arg('options')
+    { id, ...arg }: UpdateUserArgs
+  ) {
+    User.update(id, arg)
+    return { id, ...arg }
   }
 }

@@ -1,4 +1,5 @@
-import { Field, InputType } from 'type-graphql'
+import User from 'src/entities/User'
+import { Field, InputType, Int } from 'type-graphql'
 
 @InputType()
 export class OptionalVideoField {
@@ -8,8 +9,8 @@ export class OptionalVideoField {
   @Field()
   playUrl: string
 
-  @Field()
-  episode: number
+  @Field(() => Int, { nullable: true })
+  episode?: number
 
   @Field({ nullable: true })
   subtitle?: string

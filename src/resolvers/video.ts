@@ -1,5 +1,5 @@
 import Video from '../entities/Video'
-import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql'
+import { Arg, Ctx, ID, Int, Mutation, Query, Resolver } from 'type-graphql'
 import { CreateVideoArgs, EditVideoArgs } from './dto/video.arg'
 import { getConnection } from 'typeorm'
 import Post from '../entities/Post'
@@ -30,20 +30,36 @@ export default class VideoResolver {
     }
   }
 
-  @Mutation(() => Video)
-  createVideo(@Arg('options') options: CreateVideoArgs) {
-    return Video.create(options).save()
+  @Query(() => Video, { nullable: true })
+  queryVideoById(@Arg('id') id: string) {
+    return Video.findOne(id, { relations: ['bindPost'] })
   }
 
-  @Mutation(() => Boolean)
-  async editVideo(@Arg('options') { id, ...options }: EditVideoArgs) {
+  @Mutation(() => Video)
+  async createVideo(@Arg('options') options: CreateVideoArgs) {
+    const { bindPostId, ...arg } = options
+
+    const p = await Post.findOne(bindPostId)
+
+    if (p) {
+      return Video.create({
+        bindPost: await Post.findOne(bindPostId),
+        ...arg,
+      }).save()
+    } else {
+      return null
+    }
+  }
+
+  @Mutation(() => Video, { nullable: true })
+  async updateVideo(@Arg('options') { id, ...options }: EditVideoArgs) {
     try {
       await Video.update(id, options)
     } catch (error) {
-      return false
+      return 'update error'
     }
 
-    return true
+    return { id, ...options }
   }
 
   @Mutation(() => Boolean)
